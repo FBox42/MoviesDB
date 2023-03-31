@@ -3,35 +3,48 @@
 
 <body>
 <header>
-      <a href="/movieDB/" class="title">Movie Recommendations Made Easy</a>
-      <span class="settings">settings</span>
-
-
-</header>
+    <div class="header">
+    <span class="title"><a href="/movieDB/">Movie Recommendations Made Easy</a></span>
+    <span class="settings">settings</span>
+    </div>
+  </header>
   
 </body>
 
 </html>
 
 <style>
-  .title {
+.header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
   background-color: #333;
-  height: 80px;
+  height: 70px;
   padding: 0 20px;
-  font-size: 25px;
   font-weight: bold;
   text-decoration: none; 
 }
-a.title{
-    color: white; 
+
+.settings {
+  float: right;
+  font-size: 20px;
+  font-weight: bold;
+  margin-top: 20px;
+  color: white;
+
 }
 
-.settings{
-  float: right;
+.title {
+  float: left;
+  font-size: 20px;
+  font-weight: bold;
+  margin-top: 20px;
+  color: white;
 
+}
+
+.title a {
+  text-decoration: none;
+  color: white;
 }
 </style>
 
@@ -45,13 +58,13 @@ $conn = mysqli_connect("localhost", "root", "", "movies");
 $array = array();
 
 
-// Check connion
+// Check connection
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connection_error);
   }
   
   #$sql = "SELECT tconst, primaryTitle, startYear FROM recentmovies WHERE tconst='$tconst'";
-  $sql = "SELECT  tconst, primaryTitle, startYear FROM recentmovies WHERE numVotes > 20000 ORDER BY RAND()LIMIT 10";
+  $sql = "SELECT  tconst, primaryTitle, startYear FROM recentmovies WHERE numVotes > 20000 LIMIT 10";
   
   $result = $conn->query($sql);
   #var_dump($result);
@@ -63,7 +76,7 @@ if ($conn->connect_error) {
     foreach ($result as $row){
       
       if ($y==0){
-        echo "<h1><u>". $row['primaryTitle']. "</u></h1>";
+        echo "<h1><u>Results for:". $row['primaryTitle']. "</u></h1>";
         echo "id: " . $row["tconst"]. " - Name: " . $row["primaryTitle"]. " " . $row["startYear"]. "<br>";
       }
       
@@ -88,15 +101,25 @@ if ($conn->connect_error) {
 
   $post_json = json_encode($array);
   $post_json = base64_encode($post_json);
-  
-  $command = "python C:/Users/findl/Documents/SDP/test.py $post_json";
+
+  $command = "python C:/Users/findl/Documents/SDP/testJW.py $post_json";
   $jsonData = shell_exec($command);
   $data = json_decode($jsonData, TRUE);
 
+  /*
+  $command = "python C:/Users/findl/Documents/SDP/testJW.py $post_json";
+  $jsonData = shell_exec($command);
+  $data = json_decode($jsonData, TRUE);
+
+  # Loop to output the streaming platforms
   foreach ($data as $title => $info) {
     echo "<br>";
+    echo var_dump($data);
+    echo "<br><br>";
     echo "<h2><u>".$title."</u></h2>" ;
     echo "Description:<br>" . $info["description"] . "<br>";
+  
+
 
     if (empty($info["streamingPlatforms"])){
       print("No free streaming platforms.");
@@ -104,61 +127,29 @@ if ($conn->connect_error) {
     else{
       echo "Streaming platforms: ";
       $platformArray = $info["streamingPlatforms"];
+      
       foreach ($platformArray as $platform){
-       echo $platform;
+       foreach ($platform as $pt){
+        echo($pt. ", ");
+       }
       }
-
     }
-    echo "Streaming links:<br>". $info["streamingLinks"] . "<br>";
 
-}
-
-
-  # echo $jsonData;
-  
-  # for each item in json data
-  
-
-    // Pass the JSON string as a command-line argument to the Python script
-  #$output = shell_exec('C:/Users/findl/Documents/SDP/test.py' . $post_json);
-  #echo ($post_json);
-  #$command = "python C:/Users/findl/Documents/SDP/test.py $post_json";
-  #echo shell_exec($command);
-
-  #$tmp = exec("python create_prescription.py .$post_json");
-  #$result = json_decode($tmp); 
-
-  #$command = escapeshellcmd('C:/Users/findl/Documents/SDP/test.py ' .  ' ' . escapeshellarg($array));
-
-  // Execute the command and capture the output
-  #$output = shell_exec($command);
-  
-  // Output the response from the Python script
-  #echo $output;
-
-
-/*
-$output = '
-   <div class="table-responsive">
-      <table class="table table bordered">
-      <tr>
-      </tr>
-   ';
-   while($row = mysqli_fetch_array($result))
-   {
-   $output .= '
-      <tr>
-      <td>'.$row["primaryTitle"].' ('.$row["startYear"].')</a></td>
-      </tr>
-   ';
-   }
-
+    if (empty($info["streamingLinks"])){
+      echo("No Links found.");
+    }
+    else{
+      echo("<br>Streaming Links: ");
+      $linksArray = $info["streamingLinks"];
+      foreach ($linksArray as $link){
+        foreach ($link as $lk){
+          echo($lk. ", ");
+        }
+      }
+    }
+ 
+  }
 */
-
-
-
-// Get tconst from url, get top 10 reccomendations
-// For each recommondation call the api for api 
 
 ?>
 
