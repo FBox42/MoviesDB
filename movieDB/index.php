@@ -12,7 +12,9 @@
   <header>
     <div class="header">
     <span class="title"><a href="/movieDB/">Movie Recommendations Made Easy</a></span>
-    <span class="settings">settings</span>
+    <span class="settings">Settings</span>
+    <span class="watchlist"><a href="/movieDB/">Watchlist</a></span>
+
     </div>
   </header>
   <h2>Toggle Switch</h2>
@@ -37,8 +39,7 @@
 
 <style>
 .header {
-  display: flex;
-  justify-content: space-between;
+  
   background-color: #333;
   height: 70px;
   padding: 0 20px;
@@ -52,7 +53,20 @@
   font-weight: bold;
   margin-top: 20px;
   color: white;
+}
 
+.watchlist {
+  float: right;
+  font-size: 20px;
+  font-weight: bold;
+  margin-top: 20px;
+  color: white;
+  padding-right: 40px;
+}
+
+.watchlist a {
+  text-decoration: none;
+  color: white;
 }
 
 .title {
