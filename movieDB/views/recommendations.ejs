@@ -1,11 +1,11 @@
 <html>
 <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" />
-
+<link rel="stylesheet" href="header.css">
 <head>
     <header>
         <div class="header">
             <span class="title"><a href="/index">Movie Recommendations Made Easy</a></span>
-            <span class="settings">Settings</span>
+            <span class="log-out"><a href="/users/logout">Log out</a></span>
             <span class="watchlist"><a href="/watchlist">Watchlist</a></span>
         </div>
     </header>
@@ -23,50 +23,6 @@
 
 
 <style>
-    .header {
-        background-color: #333;
-        height: 70px;
-        padding: 0 20px;
-        font-weight: bold;
-        text-decoration: none;
-    }
-
-    .settings {
-        float: right;
-        font-size: 20px;
-        font-weight: bold;
-        margin-top: 20px;
-        color: white;
-    }
-
-    .watchlist {
-        float: right;
-        font-size: 20px;
-        font-weight: bold;
-        margin-top: 20px;
-        color: white;
-        padding-right: 40px;
-    }
-
-    .watchlist a {
-        text-decoration: none;
-        color: white;
-    }
-
-    .title {
-        float: left;
-        font-size: 20px;
-        font-weight: bold;
-        margin-top: 20px;
-        color: white;
-
-    }
-
-    .title a {
-        text-decoration: none;
-        color: white;
-    }
-
     img {
         max-width: 120px;
         max-height: 150px;
@@ -79,11 +35,11 @@
         left: 50%;
         transform: translate(-50%, -50%);
         background-color: white;
-        width: inherit;
+        width: 90%;
         height: inherit;
         padding: 20px;
         border-radius: 15px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        box-shadow: 0 0 100px rgba(0, 0, 0, 0.5);
         z-index: 9999;
         flex-direction: column;
         align-items: center;
@@ -99,7 +55,7 @@
 
     .popup p {
         font-size: 18px;
-        margin: 30px 0 20px 300px;
+        margin: 0 0 5px 300px;
         text-align: left;
     }
 
@@ -135,6 +91,6 @@
         font-weight: bold;
         text-align: center;
         border: 3px solid black;
-        padding: 10px;
+        padding: 5px;
     }
 </style>

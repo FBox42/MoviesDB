@@ -1,0 +1,50 @@
+
+.header {
+
+    background-color: #333;
+    height: 70px;
+    padding: 0 20px;
+    font-weight: bold;
+    text-decoration: none;
+  }
+
+  .log-out {
+    float: right;
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 20px;
+    color: white;
+  }
+
+  .log-out a {
+    text-decoration: none;
+    color: white;
+  }
+
+  .watchlist {
+    float: right;
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 20px;
+    color: white;
+    padding-right: 40px;
+  }
+
+  .watchlist a {
+    text-decoration: none;
+    color: white;
+  }
+
+  .title {
+    float: left;
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 20px;
+    color: white;
+
+  }
+
+  .title a {
+    text-decoration: none;
+    color: white;
+  }

@@ -24,16 +24,11 @@ async function displayWatchlist(titleId) {
     .then(data => {
 
       // Get TMDB ID from previous API call
-      console.log(url)
-
-
       newID = data.movie_results[0].id;
-
-
 
       // Query API with new ID to gain full results
       newurl = `https://api.themoviedb.org/3/movie/${newID}?api_key=6d5c5c1ba359501eb269dcd44731593b&append_to_response=watch/providers,videos`;
-      
+
 
       fetch(newurl)
         .then(response => response.json())
@@ -93,7 +88,6 @@ async function displayWatchlist(titleId) {
             if (typeof freeProviderResult == 'undefined') {
 
               // CURRENTLY FOR DEBUGGING, CREATE PROPER WAY TO OUTPUT TO USER
-              console.log("NO FREE STREAMING");
 
             } else {
 
@@ -121,7 +115,6 @@ async function displayWatchlist(titleId) {
 
             if (typeof rentProviderResult == 'undefined') {
 
-              console.log("NO RENT OPTIONS");
 
             } else {
               for (let i = 0; i < rentProviderResult.length; i++) {
@@ -140,7 +133,6 @@ async function displayWatchlist(titleId) {
                 rentProviderArray.push(rentProvider);
               }
               // USED FOR DEBUGGING
-              console.log(rentProviderArray);
             }
 
 
@@ -169,7 +161,6 @@ async function displayWatchlist(titleId) {
               }
 
               // USED FOR DEBUGGING
-              console.log(buyProviderArray);
             }
 
 
@@ -194,16 +185,14 @@ async function displayWatchlist(titleId) {
             buyStreamingHTML += `<img src="${buyLogoArray[i]}" width="30" height="30" title=${buyProviderArray[i]} altr=${buyProviderArray[i]}>`;
           }
 
-
-          console.log(buyStreamingHTML);
           // Create HTML for text content (movie information)
           titleAndOverviewElement.innerHTML = `<h2 class="movie-title">${title}</h2>
           <p class="movie-overview">${overview}</p>
           <p class="buttonClass"><button id="${titleId}">Remove from watchlist</button></p>
           <br>
-          <p>Streaming platforms: ${freeStreamingHTML}</p>
-          <p>Rental platforms: ${rentStreamingHTML}</p>
-          <p>Purchase platforms: ${buyStreamingHTML}</p>
+          <p>Streaming platforms:&nbsp;&nbsp;${freeStreamingHTML}</p>
+          <p>Rental platforms:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ${rentStreamingHTML}</p>
+          <p>Purchase platforms:&nbsp; ${buyStreamingHTML}</p>
           `
             ;
 
@@ -353,33 +342,36 @@ document.body.appendChild(moviesContainer);
  
 */
 
-userID = '111';
 
-fetch(`/displayWatchlist?id=${userID}`)
+fetch(`/displayWatchlist`)
   .then(response => response.json())
   .then(data => {
 
-    console.log(data.watchlistIDs);
+    console.log(data.watchlistIDs); 
 
     jsonArray = (data.watchlistIDs);
 
 
   })
   .then(() => {
-    for (let i = 0; i < jsonArray.length; i++) {
-      // Wait for the getPoster function to finish before continuing
-      console.log(jsonArray[i]);
-      displayWatchlist(jsonArray[i]);
+
+    if (jsonArray == "User not found." || typeof jsonArray !== 'object') {
+      //document.write("No movies found in watchlist")
+      var newElement = document.createElement("p");
+
+      // Set the text content of the new element
+      var textNode = document.createTextNode("No movies found in watchlist");
+      newElement.appendChild(textNode);
+
+      // Append the new element to the body of the page
+      document.body.appendChild(newElement);
+
+    } else {
+      for (let i = 0; i < jsonArray.length; i++) {
+        // Wait for the getPoster function to finish before continuing
+        displayWatchlist(jsonArray[i]);
+      }
     }
   });
 
 
-
-/*
-async function loop() {
-for (let i = 0; i < 10; i++) {
-  // Wait for the getPoster function to finish before continuing
-  await getPoster(i);
-}
-}
-*/
