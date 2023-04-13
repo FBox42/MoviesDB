@@ -1,0 +1,57 @@
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>MoviesDB</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="../header.css">
+
+</head>
+
+<body>
+  <header>
+    <div class="header">
+      <span class="title">Movie Recommendations Made Easy</a></span>
+    </div>
+  </header>
+
+  <h2>Register</h2>
+  <%- include('./partials/messages.ejs') %>
+
+    <form action="/users/register" method="POST">
+      <div class="form-group">
+        <label for="name">Name</label>
+        <input type="name" id="name" name="name" class="form-control" placeholder="Enter Name"
+          value="<%= typeof name != 'undefined' ? name : '' %>" />
+      </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" class="form-control" placeholder="Enter Email"
+          value="<%= typeof email != 'undefined' ? email : '' %>" />
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" class="form-control" placeholder="Create Password"
+          value="<%= typeof password != 'undefined' ? password : '' %>" />
+      </div>
+      <div class="form-group">
+        <label for="password2">Confirm Password</label>
+        <input type="password" id="password2" name="password2" class="form-control" placeholder="Confirm Password"
+          value="<%= typeof password2 != 'undefined' ? password2 : '' %>" />
+      </div>
+      <button type="submit"">
+          Register
+    </button>
+  </form>
+      <p>Have An Account?  <a href=" /users/login">Login</a></p>
+        </div>
+
+</body>
+
+<style>
+  .fade {
+    opacity: 100;
+  }
+</style>
