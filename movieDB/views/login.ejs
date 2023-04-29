@@ -1,6 +1,6 @@
 <header>
   <div class="header">
-    <span class="title">Movie Recommendations Made Easy</a></span>
+    <span class="title">ReelRecommendations</a></span>
   </div>
 </header>
 
@@ -13,6 +13,7 @@
   <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="../header.css">
 </head>
+<div class="content">
 <h2>Log in</h2>
 <%- include('./partials/messages.ejs') %>
 
@@ -28,10 +29,13 @@
     <label for="password">Password</label>
     <input type="password" id="password" name="password" class="form-control" placeholder="Enter Password" />
   </div>
+  <br>
   <button type="submit" class="btn btn-primary btn-block">Login</button>
 </form>
-No Account? <a href="/users/register">Register</a>
+<br>
+No Account? <a href="/users/register">Register now</a>
 </p>
+</div>
 </div>
 </div>
 </div>
@@ -39,5 +43,17 @@ No Account? <a href="/users/register">Register</a>
 <style>
   .fade {
     opacity: 100;
+  }
+
+  .content{
+    margin-left: 20px;
+  }
+
+  .form-control{
+    width:40%;
+  }
+
+  .btn-block{
+    width:auto;
   }
 </style>
