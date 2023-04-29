@@ -21,8 +21,6 @@ router.use(bodyParser.json());
 // Welcome Page
 router.get('/', forwardAuthenticated, (req, res) => res.render('welcome'));
 
-// Dashboard
-
 
 router.get('/index', ensureAuthenticated, (req, res) =>
   res.render('index')
@@ -36,8 +34,6 @@ router.get('/data', async function (req, res) {
 
 
   const { title, jsonArray } = await getMovieRecommendationsJSON(tconst);
-
-  // const finalArray = await getFinalMovieArray(jsonArray)
   
 
   // res.json(jsonArray);
@@ -81,8 +77,6 @@ router.post('/insertWatchlist', async function (req, res) {
   const watchlistResponse = await addMovieToWatchlist(user, movieID);
 
   res.send(watchlistResponse);
-  // res.json(jsonArray);
-  // res.json({ title, jsonArray: jsonArray });
 
 });
 
@@ -114,8 +108,6 @@ router.post('/removeFromWatchlist', async function (req, res) {
   const watchlistResponse = await deleteMovieFromWatchlist(userEmail, movieID);
 
   res.send(watchlistResponse);
-  // res.json(jsonArray);
-  // res.json({ title, jsonArray: jsonArray });
 
 });
 

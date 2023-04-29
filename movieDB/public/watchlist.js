@@ -1,22 +1,11 @@
-
-
-
-
-
-// Get received data and parse to json
-//var receivedJSON = document.currentScript.getAttribute("sentjson");
-//const jsonArray = JSON.parse(receivedJSON);
-
-
 // Create container for movies
 const moviesContainer = document.createElement('div');
 
-
+//Function to output all watchlist items
 async function displayWatchlist(titleId) {
 
   // Get prelimary details on movie using IMDB ID
   url = `https://api.themoviedb.org/3/find/${titleId}?api_key=6d5c5c1ba359501eb269dcd44731593b&external_source=imdb_id`;
-
 
 
   fetch(url)
@@ -46,7 +35,32 @@ async function displayWatchlist(titleId) {
           const title = data.title;
           const overview = data.overview;
           const releaseDate = data.release_date;
-          const language = data.original_language;
+          const runtime = data.runtime;
+          language = data.original_language;
+
+          language = language.charAt(0).toUpperCase() + language.slice(1);
+
+          const genres = data.genres;
+              genreString = '';
+
+              // If genre array does not exist, create string stating that, otherwise append each genre result from API array into genreString
+              if (typeof genres == 'undefined') {
+
+                genreString = "No genres found."
+
+              } else {
+
+                for (let i = 0; i < genres.length; i++) {
+
+                  genreString = genreString.concat(data.genres[i].name);
+                  if (i + 1 !== genres.length) {
+                    genreString = genreString.concat(" | ");
+                  }
+
+                }
+
+              }
+
 
           // Create img element and add poster url
           const posterElement = document.createElement('img');
@@ -61,7 +75,6 @@ async function displayWatchlist(titleId) {
           titleAndOverviewElement.classList.add('text-content');
 
 
-          //const streamingResultsGB = data['watch/providers'].results.GB
           const streamingResultsGB = data['watch/providers'].results.GB
 
 
@@ -83,11 +96,10 @@ async function displayWatchlist(titleId) {
 
             const freeProviderResult = data['watch/providers'].results.GB.flatrate;
 
-            // Get 'free' streaming services if they exist and obtain logo of said service, CURRENTLY ALSO OUTPUTS TO CONSOLE THE SERVICE NAME
+            // Get 'free' streaming services if they exist and obtain logo of said service
 
             if (typeof freeProviderResult == 'undefined') {
 
-              // CURRENTLY FOR DEBUGGING, CREATE PROPER WAY TO OUTPUT TO USER
 
             } else {
 
@@ -100,8 +112,6 @@ async function displayWatchlist(titleId) {
                 // ... DO SOMETHING TO OUTPUT/ADD LOGOS FOR LATER DISPLAY
                 freeLogoArray.push(logoUrl);
 
-
-                // GET PROVIDER NAME, PROBABLY NOT NEEDED IN FINAL VERSION, USEFUL FOR DEBUGGING CURRENTLY
                 freeProvider = data['watch/providers'].results.GB.flatrate[i].provider_name;
                 freeProviderArray.push(freeProvider);
               }
@@ -110,7 +120,7 @@ async function displayWatchlist(titleId) {
 
 
 
-            // Get rental services if they exist and obtain logo of said service, CURRENTLY ALSO OUTPUTS TO CONSOLE THE SERVICE NAME
+            // Get rental services if they exist and obtain logo of said service
             const rentProviderResult = data['watch/providers'].results.GB.rent;
 
             if (typeof rentProviderResult == 'undefined') {
@@ -124,15 +134,12 @@ async function displayWatchlist(titleId) {
                 logoPath = data['watch/providers'].results.GB.rent[i].logo_path;
                 logoUrl = `https://image.tmdb.org/t/p/w500/${logoPath}`;
 
-                // ... DO SOMETHING TO OUTPUT/ADD LOGOS FOR LATER DISPLAY
 
                 rentLogoArray.push(logoUrl);
 
-                // GET PROVIDER NAME, PROBABLY NOT NEEDED IN FINAL VERSION, USEFUL FOR DEBUGGING CURRENTLY
                 rentProvider = data['watch/providers'].results.GB.rent[i].provider_name;
                 rentProviderArray.push(rentProvider);
               }
-              // USED FOR DEBUGGING
             }
 
 
@@ -152,20 +159,13 @@ async function displayWatchlist(titleId) {
                 logoPath = data['watch/providers'].results.GB.buy[i].logo_path;
                 logoUrl = `https://image.tmdb.org/t/p/w500/${logoPath}`;
 
-                // ... DO SOMETHING TO OUTPUT/ADD LOGOS FOR LATER DISPLAY
                 buyLogoArray.push(logoUrl);
 
-                // GET PROVIDER NAME, PROBABLY NOT NEEDED IN FINAL VERSION, USEFUL FOR DEBUGGING CURRENTLY
                 buyProvider = data['watch/providers'].results.GB.buy[i].provider_name;
                 buyProviderArray.push(buyProvider);
               }
 
-              // USED FOR DEBUGGING
             }
-
-
-
-            // Get result path for streaming services of current movie, then create empty array for platforms
           }
 
           freeStreamingHTML = '';
@@ -185,10 +185,18 @@ async function displayWatchlist(titleId) {
             buyStreamingHTML += `<img src="${buyLogoArray[i]}" width="30" height="30" title=${buyProviderArray[i]} altr=${buyProviderArray[i]}>`;
           }
 
+          const voteAverage = (Math.round(data.vote_average * 10)) / 10;
+
+
           // Create HTML for text content (movie information)
           titleAndOverviewElement.innerHTML = `<h2 class="movie-title">${title}</h2>
           <p class="movie-overview">${overview}</p>
-          <p class="buttonClass"><button id="${titleId}">Remove from watchlist</button></p>
+          <p>Genres: &nbsp ${genreString}<br>
+          Rating: &nbsp&nbsp&nbsp&nbsp${voteAverage}/10<br>
+          Runtime: &nbsp${runtime} minutes<br>
+          Original language: &nbsp${language}<br>
+          Release date: &nbsp${releaseDate}</p><br>
+          <p class="buttonClass"><button class="btn btn-primary btn-block" id="${titleId}">Remove from watchlist</button></p>
           <br>
           <p>Streaming platforms:&nbsp;&nbsp;${freeStreamingHTML}</p>
           <p>Rental platforms:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ${rentStreamingHTML}</p>
@@ -223,10 +231,6 @@ async function displayWatchlist(titleId) {
           }
 
 
-
-          // Create iframe element and then add API video result to movie div
-
-
           // Add new movie div to the movie container created before the loop
           moviesContainer.appendChild(movieDiv);
 
@@ -234,10 +238,10 @@ async function displayWatchlist(titleId) {
 
           const removeFromWatchlistButton = titleAndOverviewElement.querySelector('button');
           removeFromWatchlistButton.addEventListener('click', function () {
-            var $button = $(this); // cache the button element
+            var $button = $(this); 
 
-            const imdbID = this.id; // capture the titleId value in a closure
-            // AJAX request
+            const imdbID = this.id; 
+
             $.ajax({
               type: "POST",
               url: "/removeFromWatchlist",
@@ -247,8 +251,8 @@ async function displayWatchlist(titleId) {
               success: function (response) {
                 console.log(response);
                 // Change text of HTML element
-                $button.text("Removed"); // change the text of the button
-                $button.prop("disabled", true); // disable the button
+                $button.text("Removed"); 
+                $button.prop("disabled", true); 
               },
               error: function (error) {
                 console.log(error);
@@ -265,82 +269,6 @@ async function displayWatchlist(titleId) {
 
 };
 document.body.appendChild(moviesContainer);
-
-// Add movie container to page
-
-/*
- 
-// For each received movie, query api to gain details and then output to user
-jsonArray.forEach(titleId => {
- 
-  // Get prelimary details on movie using IMDB ID
-  url = `https://api.themoviedb.org/3/find/${titleId}?api_key=6d5c5c1ba359501eb269dcd44731593b&external_source=imdb_id`;
- 
-  fetch(url)
-    .then(response => response.json())
-    .then(data => {
- 
-      // Get TMDB ID from previous API call
-      newID = data.movie_results[0].id;
- 
-      // Query API with new ID to gain full results
-      newurl = `https://api.themoviedb.org/3/movie/${newID}?api_key=6d5c5c1ba359501eb269dcd44731593b&append_to_response==watch/providers,videos`;
- 
-      fetch(newurl)
-        .then(response => response.json())
-        .then(data => {
- 
-          // Create div for movies
-          const movieDiv = document.createElement('div');
-          movieDiv.classList.add('movie');
- 
-          // Gain movie information from API result
-          const posterPath = data.poster_path;
-          const posterUrl = `https://image.tmdb.org/t/p/original/${posterPath}`;
-          const title = data.title;
-          const overview = data.overview;
-          const releaseDate = data.release_date;
-          const language = data.original_language;
- 
-          // Create img element and add poster url
-          const posterElement = document.createElement('img');
-          posterElement.src = posterUrl;
- 
-          // Add poster to movie div
-          posterElement.classList.add('movie-poster');
-          movieDiv.appendChild(posterElement);
- 
-          // Create div for movie information
-          const titleAndOverviewElement = document.createElement('div');
-          titleAndOverviewElement.classList.add('text-content');
- 
-          // Create HTML for text content (movie information)
-          titleAndOverviewElement.innerHTML = `<h2 class="movie-title">${title}</h2><p class="movie-overview">${overview}</p>`;
- 
-          // Append text to movie div
-          movieDiv.appendChild(titleAndOverviewElement);
- 
-          // Get video results, IN FUTURE ADD CHECK TO ENSURE ERROR WONT BE THROWN IF THERE IS 0 RESULTS OR THE RESULT IS NOT FROM YT
-          const videoId = data.videos.results[0].key;
-          const videoUrl = `https://www.youtube.com/embed/${videoId}`;
- 
-          // Create iframe element and then add API video result to movie div
-          const videoElement = document.createElement('iframe');
-          videoElement.src = videoUrl;
-          videoElement.classList.add('movie-video');
-          movieDiv.appendChild(videoElement);
- 
-          // Add new movie div to the movie container created before the loop
-          moviesContainer.appendChild(movieDiv);
-        });
-    })
-    .catch(error => console.error(error));
-});
- 
-// Add movie container to page
-document.body.appendChild(moviesContainer);
- 
-*/
 
 
 fetch(`/displayWatchlist`)
@@ -373,5 +301,3 @@ fetch(`/displayWatchlist`)
       }
     }
   });
-
-

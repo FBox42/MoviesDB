@@ -1,6 +1,10 @@
+require('dotenv').config();
+
+dbKey = process.env.DATABASE_PASSWORD
+
 const { MongoClient } = require('mongodb');
 
-const uri = "mongodb+srv://fbox:MOVIE@moviesdb.oqspgh2.mongodb.net/?retryWrites=true&w=majority";
+const uri = "mongodb+srv://fbox:" + dbKey + "@moviesdb.oqspgh2.mongodb.net/?retryWrites=true&w=majority";
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
 async function getWatchlistStatus(userID, movieTitle) {

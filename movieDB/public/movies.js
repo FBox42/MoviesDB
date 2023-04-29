@@ -1,9 +1,6 @@
-//const { response } = require("express");
-
 // Create div for movies
 const movieContainer = document.createElement('div');
 movieContainer.className = 'movie-container';
-
 
 posterCounter = 0;
 loopCounter = 0;
@@ -20,12 +17,10 @@ function updatePosterCounter() {
 // Function to get movie details, display on page given reccomendation order and add popup box for further information
 async function getPoster(posterNum) {
 
-
   while (postersPlaced < 10 && loopCounter < jsonArray.length) {
 
-
-
     const imdbID = jsonArray[loopCounter];
+
     // Get prelimary details on movie using IMDB ID
     url = `https://api.themoviedb.org/3/find/${imdbID}?api_key=6d5c5c1ba359501eb269dcd44731593b&external_source=imdb_id`;
 
@@ -35,6 +30,7 @@ async function getPoster(posterNum) {
 
         // Get TMDB ID from previous API call
 
+
         newID = data.movie_results[0].id;
 
         // Query API with new ID to gain full results
@@ -43,6 +39,9 @@ async function getPoster(posterNum) {
         fetch(newurl)
           .then(response => response.json())
           .then(data => {
+
+            console.log(data)
+
 
             // Log result for debugging, remove before finalisation
 
@@ -59,16 +58,12 @@ async function getPoster(posterNum) {
 
             if (typeof streamingResultsGB == 'undefined') {
 
-              // CURRENTLY FOR DEBUGGING, CREATE PROPER WAY TO OUTPUT TO USER
             } else {
 
               const freeProviderResult = data['watch/providers'].results.GB.flatrate;
 
-              // Get 'free' streaming services if they exist and obtain logo of said service, CURRENTLY ALSO OUTPUTS TO CONSOLE THE SERVICE NAME
-
               if (typeof freeProviderResult == 'undefined') {
 
-                // CURRENTLY FOR DEBUGGING, CREATE PROPER WAY TO OUTPUT TO USER
 
               } else {
 
@@ -104,15 +99,12 @@ async function getPoster(posterNum) {
                   logoPath = data['watch/providers'].results.GB.rent[i].logo_path;
                   logoUrl = `https://image.tmdb.org/t/p/w500/${logoPath}`;
 
-                  // ... DO SOMETHING TO OUTPUT/ADD LOGOS FOR LATER DISPLAY
 
                   rentLogoArray.push(logoUrl);
 
-                  // GET PROVIDER NAME, PROBABLY NOT NEEDED IN FINAL VERSION, USEFUL FOR DEBUGGING CURRENTLY
                   rentProvider = data['watch/providers'].results.GB.rent[i].provider_name;
                   rentProviderArray.push(rentProvider);
                 }
-                // USED FOR DEBUGGING
               }
 
 
@@ -129,22 +121,17 @@ async function getPoster(posterNum) {
                   logoPath = data['watch/providers'].results.GB.buy[i].logo_path;
                   logoUrl = `https://image.tmdb.org/t/p/w500/${logoPath}`;
 
-                  // ... DO SOMETHING TO OUTPUT/ADD LOGOS FOR LATER DISPLAY
                   buyLogoArray.push(logoUrl);
 
-                  // GET PROVIDER NAME, PROBABLY NOT NEEDED IN FINAL VERSION, USEFUL FOR DEBUGGING CURRENTLY
                   buyProvider = data['watch/providers'].results.GB.buy[i].provider_name;
                   buyProviderArray.push(buyProvider);
                 }
 
-                // USED FOR DEBUGGING
               }
 
 
               totalProviderArray = freeProviderArray + rentProviderArray + buyProviderArray;
 
-
-              // Get result path for streaming services of current movie, then create empty array for platforms
             }
 
 
@@ -154,11 +141,14 @@ async function getPoster(posterNum) {
             const title = data.title;
             const overview = data.overview;
             const releaseDate = data.release_date;
-            const language = data.original_language;
+            language = data.original_language;
             const runtime = data.runtime;
             const voteAverage = (Math.round(data.vote_average * 10)) / 10;
 
 
+
+
+            language = language.charAt(0).toUpperCase() + language.slice(1);
 
             // Get poster image and add to poster element 
             const posterElement = document.createElement('img');
@@ -180,13 +170,11 @@ async function getPoster(posterNum) {
 
               if (typeof streamingResultsGB == 'undefined') {
 
-                // CURRENTLY FOR DEBUGGING, CREATE PROPER WAY TO OUTPUT TO USER
-
               } else {
 
                 const freeProviderResult = data['watch/providers'].results.GB.flatrate;
 
-                // Get 'free' streaming services if they exist and obtain logo of said service, CURRENTLY ALSO OUTPUTS TO CONSOLE THE SERVICE NAME
+                // Get 'free' streaming services if they exist and obtain logo of said service
 
                 if (typeof freeProviderResult == 'undefined') {
 
@@ -209,7 +197,7 @@ async function getPoster(posterNum) {
 
 
 
-                // Get rental services if they exist and obtain logo of said service, CURRENTLY ALSO OUTPUTS TO CONSOLE THE SERVICE NAME
+                // Get rental services if they exist and obtain logo of said service
                 const rentProviderResult = data['watch/providers'].results.GB.rent;
 
                 if (typeof rentProviderResult == 'undefined') {
@@ -230,7 +218,7 @@ async function getPoster(posterNum) {
                   }
                 }
 
-                // Get purchase services if they exist and obtain logo of said service, CURRENTLY ALSO OUTPUTS TO CONSOLE THE SERVICE NAME
+                // Get purchase services if they exist and obtain logo of said service
                 const buyProviderResult = data['watch/providers'].results.GB.buy;
 
                 if (typeof buyProviderResult == 'undefined') {
@@ -251,7 +239,6 @@ async function getPoster(posterNum) {
 
                 }
 
-
                 totalProviderArray = freeProviderArray + rentProviderArray + buyProviderArray;
 
               }
@@ -271,9 +258,12 @@ async function getPoster(posterNum) {
                 for (let i = 0; i < genres.length; i++) {
 
                   genreString = genreString.concat(data.genres[i].name);
-                  genreString = genreString.concat(" | ");
+                  if (i + 1 !== genres.length) {
+                    genreString = genreString.concat(" | ");
+                  }
 
                 }
+
               }
 
 
@@ -318,11 +308,6 @@ async function getPoster(posterNum) {
                 }
               });
 
-              // In server create call to function to check it
-
-              // Create watchlistCheck.js where it querys the database with the user id and movie id 
-
-              // Return false or true 
 
               freeStreamingHTML = '';
               rentStreamingHTML = '';
@@ -342,6 +327,8 @@ async function getPoster(posterNum) {
               }
 
 
+
+
               // Create popup element and then create html for it
               const popupElement = document.createElement('div');
               popupElement.className = 'popup';
@@ -352,10 +339,13 @@ async function getPoster(posterNum) {
                 ${videoHTML}
                 </div>
                 <p>${overview}</p>
-                <p>Genres: ${genreString}<br>
-                Rating: ${voteAverage}/10<br>
-                Runtime: ${runtime} minutes.</p>
-                <p class="buttonClass"><button id="${imdbID}" disabled>Loading</button></p>
+                <br>
+                <p>Genres: &nbsp ${genreString}<br>
+                Rating: &nbsp&nbsp&nbsp&nbsp${voteAverage}/10<br>
+                Runtime: &nbsp${runtime} minutes<br>
+                Original language: &nbsp${language}<br>
+                Release date: &nbsp${releaseDate}</p><br>
+                <div class="buttonClass"><button class="btn btn-primary btn-block" id="${imdbID}" disabled>Loading</button></div>
                 <p>Streaming platforms: ${freeStreamingHTML}</p>
                 <p>Rental platforms: ${rentStreamingHTML}</P>
                 <p>Purchase platforms: ${buyStreamingHTML}</p>
@@ -382,8 +372,8 @@ async function getPoster(posterNum) {
                   success: function (response) {
 
                     // Change text of HTML element
-                    $button.text("Added"); // change the text of the button
-                    $button.prop("disabled", true); // disable the button
+                    $button.text("Added");
+                    $button.prop("disabled", true);
 
                   },
                   error: function (error) {
@@ -401,31 +391,26 @@ async function getPoster(posterNum) {
               // Add the popup element to the document
               document.body.appendChild(popupElement);
 
-
-
-
-
             });
 
+
             // Set poster location on page
-
-
 
             if (paramArray.some(platform => totalProviderArray.includes(platform) || paramArray[0] == "All")) {
               newvalue = getPosterPlacement();
 
-              if (newvalue < 10){
-              posterElement.style.position = 'absolute';
-              posterElement.style.top = posterDesigns[newvalue].top;
-              posterElement.style.left = posterDesigns[newvalue].left;
+              if (newvalue < 10) {
+                posterElement.style.position = 'absolute';
+                posterElement.style.top = posterDesigns[newvalue].top;
+                posterElement.style.left = posterDesigns[newvalue].left;
               }
-              else{
+              else {
                 return;
               }
 
             } else {
               return false;
-            }            
+            }
 
             // Add poster to document
             movieContainer.appendChild(posterElement);
@@ -436,9 +421,6 @@ async function getPoster(posterNum) {
 
       })
       .catch(error => console.error(error));
-
-
-    // END OF WHILE LOOP
 
     updatePosterCounter();
 
@@ -458,7 +440,7 @@ function getPosterPlacement() {
 }
 
 const posterDesigns = [
-  { top: '20%', left: '40%' },
+  { top: '18%', left: '40%' },
   { top: '65%', left: '50%' },
   { top: '45%', left: '65%' },
   { top: '70%', left: '30%' },
@@ -482,9 +464,9 @@ paramArray = [];
 if (params.includes("All")) {
 
   paramArray.push("All")
-    
+
 }
-else{
+else {
   if (params.includes("NF")) {
 
     paramArray.push("Netflix")
